@@ -46,13 +46,15 @@ class UT3Game(Game):
 
     def getGameEnded(self, board, player):
         #Return 0 if not ended, 1 if player 1 won, -1 if player 1 lost.
-        #Return small non-zero value for draw.
+        #Return small non-zero value for a draw.
         b = Board(self.n)
         b.pieces = np.copy(board[0])
         b.macro = np.copy(board[1,:3,:3])
         for player in -1, 1:
             if b.is_win(player):
                 return player
+            if b.is_full():
+                return b.draw
         return 0
 
     def getCanonicalForm(self, board, player):

@@ -17,6 +17,7 @@ class Board:
         self.n = n
         self.macro = np.zeros((self.n, self.n))
         self.pieces = np.zeros((self.n**2, self.n**2))
+        self.draw = np.finfo(self.pieces.dtype).eps
 
     def __getitem__(self, index):
         return self.pieces[index]
@@ -34,6 +35,11 @@ class Board:
                         moves.append(move)
         return moves
 
+    def is_full(self, board=None):
+        """Check whether a board is full."""
+        if board is None: board = self.macro
+        return all(board)
+
     def is_win(self, player, board=None):
         """Check whether a given player has a line in any direction."""
         if board is None: board = self.macro
@@ -50,9 +56,13 @@ class Board:
         _v = tuple(int(i%self.n) for i in move)
         assert self.pieces[move] == 0
         self.pieces[move] = player
+        uboard = self.get_microboard(_u)
+
+        if self.is_full(uboard):
+            self.macro[_u] = self.draw
 
         for player in -1, 1:
-            if self.is_win(player, self.get_microboard(_u)):
+            if self.is_win(player, uboard):
                 self.macro[_u] = player
 
         for u in product(range(self.n), range(self.n)):
