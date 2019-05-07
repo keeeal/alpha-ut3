@@ -38,16 +38,16 @@ class Board:
     def is_full(self, board=None):
         """Check whether a board is full."""
         if board is None: board = self.macro
-        return all(board)
+        return board.all()
 
     def is_win(self, player, board=None):
         """Check whether a given player has a line in any direction."""
         if board is None: board = self.macro
         for i in range(len(board)):
-            if all(board[i,:] == player): return True
-            if all(board[:,i] == player): return True
-        if all(board.diagonal() == player): return True
-        if all(board[::-1].diagonal() == player): return True
+            if (board[i,:] == player).all(): return True
+            if (board[:,i] == player).all(): return True
+        if (board.diagonal() == player).all(): return True
+        if (board[::-1].diagonal() == player).all(): return True
         return False
 
     def execute_move(self, move, player):
