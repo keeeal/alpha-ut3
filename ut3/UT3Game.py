@@ -64,15 +64,15 @@ class UT3Game(Game):
         # rotate, mirror
         assert(len(pi) == self.getActionSize())  # 1 for pass
         pi_board = np.reshape(pi, self.getBoardSize())
-        sym = []
+        sym, x, y = [], 1, 2
 
         for rot in range(4):
             for flip in True, False:
-                newB = np.rot90(board, rot)
-                newPi = np.rot90(pi_board, rot)
+                newB = np.rot90(board, rot, (x,y))
+                newPi = np.rot90(pi_board, rot, (x,y))
                 if flip:
-                    newB = np.fliplr(newB)
-                    newPi = np.fliplr(newPi)
+                    newB = np.flip(newB, x)
+                    newPi = np.fliplr(newPi, x)
                 sym.append((newB, list(newPi.ravel())))
         return sym
 
