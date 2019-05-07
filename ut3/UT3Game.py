@@ -68,11 +68,11 @@ class UT3Game(Game):
 
         for rot in range(4):
             for flip in True, False:
-                newB = np.rot90(board, rot, (x,y))
-                newPi = np.rot90(pi_board, rot, (x,y))
+                newB = np.rot90(board, rot, (x, y))
+                newPi = np.rot90(pi_board, rot)
                 if flip:
-                    newB = np.flip(newB, x)
-                    newPi = np.fliplr(newPi, x)
+                    newB = np.flip(newB, -1)
+                    newPi = np.flip(newPi, -1)
                 sym.append((newB, list(newPi.ravel())))
         return sym
 
