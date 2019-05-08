@@ -9,11 +9,11 @@ It's like tic-tac-toe, but each square of the game contains another game of tic-
 ## What is AlphaZero?
 AlphaZero is a reinforcement learning algorithm trained only using self-play. It combines a neural network and Monte Carlo Tree Search in an elegant policy iteration framework to achieve stable learning. [Read more...](https://web.stanford.edu/~surag/posts/alphazero.html)
 
-## Requirements
- - [PyTorch](https://pytorch.org/)
-
 ## Experiments
 Coming soon.
+
+## Requirements
+ - [PyTorch](https://pytorch.org/)
 
 ## Thanks
  - [alpha-zero-general](https://github.com/suragnair/alpha-zero-general)
