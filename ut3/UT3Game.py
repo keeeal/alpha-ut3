@@ -81,14 +81,16 @@ class UT3Game(Game):
 
 def display(board, indent='  '):
     print('')
+    print(indent + '   0 | 1 | 2 ‖ 3 | 4 | 5 ‖ 6 | 7 | 8')
+    print('')
     for n, row in enumerate(board[0]):
         if n:
             if n % 3:
-                sep = '---+---+---'
+                sep = '- ---+---+---'
                 print(indent + sep + '‖' + sep + '‖' + sep)
             else:
-                sep = '==========='
+                sep = '= ==========='
                 print(indent + sep + '#' + sep + '#' + sep)
         row = ' ‖ '.join(' | '.join(map(str, map(int, row[i:i+3]))) for i in range(0, len(row), 3))
-        print(indent + ' ' + row.replace('-1','O').replace('1','X').replace('0','.'))
+        print(indent + ' ' + str(n) + ' ' + row.replace('-1','O').replace('1','X').replace('0','.'))
     print('')
