@@ -12,6 +12,10 @@ AlphaZero is a reinforcement learning algorithm trained only using self-play. It
 ## Experiments
 Coming soon.
 
+## To-do
+ - Reshape nnet policy output to match board shape. This should retain the spatial relationship between game states and policy vectors.
+ - Implement UT3 neural network in other frameworks, eg: TensorFlow.
+
 ## Requirements
  - [PyTorch](https://pytorch.org/)
 
