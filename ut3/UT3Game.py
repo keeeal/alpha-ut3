@@ -79,16 +79,16 @@ class UT3Game(Game):
     def stringRepresentation(self, board):
         return board.tostring()
 
-    def display(board, indent='  '):
-        print('')
-        for n, row in enumerate(board[0]):
-            if n:
-                if n % 3:
-                    sep = '---+---+---'
-                    print(indent + sep + '‖' + sep + '‖' + sep)
-                else:
-                    sep = '==========='
-                    print(indent + sep + '#' + sep + '#' + sep)
-            row = ' ‖ '.join(' | '.join(row[i:i+3]) for i in range(0, len(row), 3))
-            print(indent + ' ' + row.replace('1','X').replace('0','O'))
-        print('')
+def display(board, indent='  '):
+    print('')
+    for n, row in enumerate(board[0]):
+        if n:
+            if n % 3:
+                sep = '---+---+---'
+                print(indent + sep + '‖' + sep + '‖' + sep)
+            else:
+                sep = '==========='
+                print(indent + sep + '#' + sep + '#' + sep)
+        row = ' ‖ '.join(' | '.join(row[i:i+3]) for i in range(0, len(row), 3))
+        print(indent + ' ' + row.replace('1','X').replace('0','O'))
+    print('')
