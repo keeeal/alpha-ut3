@@ -86,11 +86,11 @@ def display(board, indent='  '):
     for n, row in enumerate(board[0]):
         if n:
             if n % 3:
-                sep = '- ---+---+---'
-                print(indent + sep + '‖' + sep + '‖' + sep)
+                sep = '---+---+---'
+                print('- ' + indent + sep + '‖' + sep + '‖' + sep)
             else:
-                sep = '= ==========='
-                print(indent + sep + '#' + sep + '#' + sep)
+                sep = '==========='
+                print('= ' + indent + sep + '#' + sep + '#' + sep)
         row = ' ‖ '.join(' | '.join(map(str, map(int, row[i:i+3]))) for i in range(0, len(row), 3))
-        print(indent + ' ' + str(n) + ' ' + row.replace('-1','O').replace('1','X').replace('0','.'))
+        print(indent + str(n) + '  ' + row.replace('-1','O').replace('1','X').replace('0','.'))
     print('')
