@@ -18,7 +18,8 @@ class HumanUT3Player():
     def play(self, board):
         valid = self.game.getValidMoves(board, 1)
         print('Valid moves:')
-        print(', '.join(str(int(i/self.game.n**2))+' '+str(int(i%self.game.n**2)) for i in valid if i))
+        print(', '.join(str(int(i/self.game.n**2))+' '+str(int(i%self.game.n**2))
+            for i, v in enumerate(valid) if v))
         while True:
             a = input()
             x, y = [int(x) for x in a.split(' ')]
