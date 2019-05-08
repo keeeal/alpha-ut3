@@ -16,7 +16,6 @@ class HumanUT3Player():
         self.game = game
 
     def play(self, board):
-        display(board)
         valid = self.game.getValidMoves(board, 1)
         for i in range(len(valid)):
             if valid[i]:
