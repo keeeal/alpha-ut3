@@ -12,7 +12,7 @@ use this script to play any two agents against each other, or play manually with
 any agent.
 """
 
-g = UT3Game(6)
+g = UT3Game()
 
 # all players
 rp = RandomPlayer(g).play
