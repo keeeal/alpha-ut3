@@ -89,6 +89,6 @@ def display(board, indent='  '):
             else:
                 sep = '==========='
                 print(indent + sep + '#' + sep + '#' + sep)
-        row = ' ‖ '.join(' | '.join(map(str, row[i:i+3])) for i in range(0, len(row), 3))
+        row = ' ‖ '.join(' | '.join(map(str, map(int, row[i:i+3]))) for i in range(0, len(row), 3))
         print(indent + ' ' + row.replace('1','X').replace('0','O'))
     print('')
