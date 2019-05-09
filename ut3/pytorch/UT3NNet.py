@@ -46,9 +46,13 @@ class UT3NNet(nn.Module):
         self.conv2 = DenseConv2d(self.board_c+1*self.args.growth, self.args.growth)
         self.conv3 = DenseConv2d(self.board_c+2*self.args.growth, self.args.growth)
         self.conv4 = DenseConv2d(self.board_c+3*self.args.growth, self.args.growth)
+        self.conv5 = DenseConv2d(self.board_c+4*self.args.growth, self.args.growth)
+        self.conv6 = DenseConv2d(self.board_c+5*self.args.growth, self.args.growth)
+        self.conv7 = DenseConv2d(self.board_c+6*self.args.growth, self.args.growth)
+        self.conv8 = DenseConv2d(self.board_c+7*self.args.growth, self.args.growth)
 
-        self.out_pi = SepConv2d(self.board_c+4*self.args.growth, 1)
-        self.out_v = SepConv2d(self.board_c+4*self.args.growth, 1,
+        self.out_pi = SepConv2d(self.board_c+8*self.args.growth, 1)
+        self.out_v = SepConv2d(self.board_c+8*self.args.growth, 1,
             kernel_size=(self.board_x, self.board_y), padding=0)
 
     def forward(self, s):
@@ -57,6 +61,10 @@ class UT3NNet(nn.Module):
         s = self.conv2(s)
         s = self.conv3(s)
         s = self.conv4(s)
+        s = self.conv5(s)
+        s = self.conv6(s)
+        s = self.conv7(s)
+        s = self.conv8(s)
 
         s = self.drop(s)
 
