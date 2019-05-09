@@ -10,12 +10,12 @@ class UT3Game(Game):
         self.n = n
 
     def _boardArray(self, b):
-        macro_a = np.tile(b.macro, (self.n, self.n))
-        macro_b = b.macro.repeat(self.n, 0).repeat(self.n, 1)
-        return np.stack((b.pieces, macro_a, macro_b))
+        macro = np.tile(b.macro, (self.n, self.n))
+        #macro = b.macro.repeat(self.n, 0).repeat(self.n, 1)
+        return np.stack((b.pieces, macro))
 
     def getBoardChannels(self):
-        return 3
+        return 2
 
     def getBoardSize(self):
         return self.n**2, self.n**2
@@ -64,15 +64,15 @@ class UT3Game(Game):
         # rotate, mirror
         assert(len(pi) == self.getActionSize())  # 1 for pass
         pi_board = np.reshape(pi, self.getBoardSize())
-        sym, x, y = [], 1, 2
+        sym, x, y = [], -2, -1
 
         for rot in range(4):
             for flip in True, False:
                 newB = np.rot90(board, rot, (x, y))
-                newPi = np.rot90(pi_board, rot)
+                newPi = np.rot90(pi_board, rot, (x, y))
                 if flip:
-                    newB = np.flip(newB, -1)
-                    newPi = np.flip(newPi, -1)
+                    newB = np.flip(newB, y)
+                    newPi = np.flip(newPi, y)
                 sym.append((newB, list(newPi.ravel())))
         return sym
 
