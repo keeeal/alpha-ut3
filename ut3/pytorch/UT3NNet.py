@@ -64,10 +64,8 @@ class UT3NNet(nn.Module):
 
         print(s.shape)
 
-        pi = self.out_pi(s)
-        v = self.out_v(s)
-
-        pi = pi.view(-1, self.board_x*self.board_y)
+        pi = self.out_pi(s).view(-1, self.board_x*self.board_y)
+        v = self.out_v(s).view(-1, 1)
 
         print(pi.shape, v.shape)
 
