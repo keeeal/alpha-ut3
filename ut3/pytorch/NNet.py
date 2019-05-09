@@ -23,10 +23,10 @@ from .UT3NNet import UT3NNet as onnet
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
-    'epochs': 10,
+    'epochs': 16,
     'batch_size': 64,
     'cuda': torch.cuda.is_available(),
-    'num_channels': 512,
+    'growth': 16,
 })
 
 class NNetWrapper(NeuralNet):

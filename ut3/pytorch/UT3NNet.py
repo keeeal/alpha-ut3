@@ -32,7 +32,7 @@ class DenseConv2d(nn.Module):
         return torch.cat((x, self.nlin(self.norm(self.conv(x)))), dim=1)
 
 class UT3NNet(nn.Module):
-    def __init__(self, game, args, growth=16):
+    def __init__(self, game, args):
         # game params
         self.board_x, self.board_y = game.getBoardSize()
         self.board_c = game.getBoardChannels()
@@ -42,13 +42,13 @@ class UT3NNet(nn.Module):
         super(UT3NNet, self).__init__()
         self.drop = nn.Dropout(self.args.dropout)
 
-        self.conv1 = DenseConv2d(self.board_c+0*growth, growth)
-        self.conv2 = DenseConv2d(self.board_c+1*growth, growth)
-        self.conv3 = DenseConv2d(self.board_c+2*growth, growth)
-        self.conv4 = DenseConv2d(self.board_c+3*growth, growth)
+        self.conv1 = DenseConv2d(self.board_c+0*self.args.growth, self.args.growth)
+        self.conv2 = DenseConv2d(self.board_c+1*self.args.growth, self.args.growth)
+        self.conv3 = DenseConv2d(self.board_c+2*self.args.growth, self.args.growth)
+        self.conv4 = DenseConv2d(self.board_c+3*self.args.growth, self.args.growth)
 
-        self.out_pi = SepConv2d(self.board_c+4*growth, 1)
-        self.out_v = SepConv2d(self.board_c+4*growth, 1,
+        self.out_pi = SepConv2d(self.board_c+4*self.args.growth, 1)
+        self.out_v = SepConv2d(self.board_c+4*self.args.growth, 1,
             kernel_size=(self.board_x, self.board_y), padding=0)
 
     def forward(self, s):
