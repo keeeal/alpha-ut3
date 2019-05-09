@@ -10,8 +10,29 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 
+class SepConv2d(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1):
+        super().__init__()
+        k = min(in_channels, out_channels)
+        self.a = nn.Conv2d(k, k, kernel_size, stride, padding, groups=k)
+        self.b = nn.Conv2d(in_channels, out_channels, 1, 1)
+        if k < in_channels: self.a, self.b = self.b, self.a
+
+    def forward(self, x):
+        return self.b(self.a(x))
+
+class DenseConv2d(nn.Module):
+    def __init__(self, in_channels, growth):
+        super().__init__()
+        self.conv = SepConv2d(in_channels, growth)
+        self.norm = nn.BatchNorm2d(growth)
+        self.nlin = nn.ReLU()
+
+    def forward(self, x):
+        return torch.cat((x, self.nlin(self.norm(self.conv(x)))), dim=1)
+
 class UT3NNet(nn.Module):
-    def __init__(self, game, args):
+    def __init__(self, game, args, growth=16):
         # game params
         self.board_x, self.board_y = game.getBoardSize()
         self.board_c = game.getBoardChannels()
@@ -19,39 +40,35 @@ class UT3NNet(nn.Module):
         self.args = args
 
         super(UT3NNet, self).__init__()
-        self.conv1 = nn.Conv2d(self.board_c, args.num_channels, 3, stride=1, padding=1)
-        self.conv2 = nn.Conv2d(args.num_channels, args.num_channels, 3, stride=1, padding=1)
-        self.conv3 = nn.Conv2d(args.num_channels, args.num_channels, 3, stride=1)
-        self.conv4 = nn.Conv2d(args.num_channels, args.num_channels, 3, stride=1)
+        self.drop = nn.Dropout(self.args.dropout)
 
-        self.bn1 = nn.BatchNorm2d(args.num_channels)
-        self.bn2 = nn.BatchNorm2d(args.num_channels)
-        self.bn3 = nn.BatchNorm2d(args.num_channels)
-        self.bn4 = nn.BatchNorm2d(args.num_channels)
+        self.conv1 = DenseConv2d(self.board_c+0*growth, growth)
+        self.conv2 = DenseConv2d(self.board_c+1*growth, growth)
+        self.conv3 = DenseConv2d(self.board_c+2*growth, growth)
+        self.conv4 = DenseConv2d(self.board_c+3*growth, growth)
 
-        self.fc1 = nn.Linear(args.num_channels*(self.board_x-4)*(self.board_y-4), 1024)
-        self.fc_bn1 = nn.BatchNorm1d(1024)
-
-        self.fc2 = nn.Linear(1024, 512)
-        self.fc_bn2 = nn.BatchNorm1d(512)
-
-        self.fc3 = nn.Linear(512, self.action_size)
-
-        self.fc4 = nn.Linear(512, 1)
+        self.out_pi = SepConv2d(self.board_c+4*growth, 1)
+        self.out_v = SepConv2d(self.board_c+4*growth, 1,
+            kernel_size=(self.board_x, self.board_y), padding=0)
 
     def forward(self, s):
-        #                                                           s: batch_size x board_c x board_x x board_y
-        #s = s.view(-1, 1, self.board_x, self.board_y)                # batch_size x 1 x board_x x board_y
-        s = F.relu(self.bn1(self.conv1(s)))                          # batch_size x num_channels x board_x x board_y
-        s = F.relu(self.bn2(self.conv2(s)))                          # batch_size x num_channels x board_x x board_y
-        s = F.relu(self.bn3(self.conv3(s)))                          # batch_size x num_channels x (board_x-2) x (board_y-2)
-        s = F.relu(self.bn4(self.conv4(s)))                          # batch_size x num_channels x (board_x-4) x (board_y-4)
-        s = s.view(-1, self.args.num_channels*(self.board_x-4)*(self.board_y-4))
 
-        s = F.dropout(F.relu(self.fc_bn1(self.fc1(s))), p=self.args.dropout, training=self.training)  # batch_size x 1024
-        s = F.dropout(F.relu(self.fc_bn2(self.fc2(s))), p=self.args.dropout, training=self.training)  # batch_size x 512
+        print(s.shape)
 
-        pi = self.fc3(s)                                                                         # batch_size x action_size
-        v = self.fc4(s)                                                                          # batch_size x 1
+        s = self.conv1(s)
+        s = self.conv2(s)
+        s = self.conv3(s)
+        s = self.conv4(s)
+
+        s = self.drop(s)
+
+        print(s.shape)
+
+        pi = self.out_pi(s)
+        v = self.out_v(s)
+
+        print(pi.shape, v.shape)
+
+        raise
 
         return F.log_softmax(pi, dim=1), torch.tanh(v)
