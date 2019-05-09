@@ -39,8 +39,8 @@ class NNetWrapper(NeuralNet):
         if args.cuda:
             self.nnet.cuda()
 
-            if torch.cuda.device_count() > 1:
-                self.nnet = torch.nn.DataParallel(self.nnet)
+            #if torch.cuda.device_count() > 1:
+            #    self.nnet = torch.nn.DataParallel(self.nnet)
 
     def train(self, examples):
         """
