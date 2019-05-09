@@ -17,7 +17,8 @@ Coming soon.
  - [Scale terminal results by the game length to prefer shorter games](https://medium.com/oracledevs/lessons-from-alphazero-connect-four-e4a0ae82af68).
  - [Introduce Dirichlet noise into the MCTS](https://medium.com/oracledevs/lessons-from-alphazero-part-3-parameter-tweaking-4dceb78ed1e5).
  - [Use an average of `v` and `q` as a training target](https://medium.com/oracledevs/lessons-from-alphazero-part-4-improving-the-training-target-6efba2e71628).
- - [Cyclical learning rate. ~~Slow window size increase~~](https://medium.com/oracledevs/lessons-from-alpha-zero-part-6-hyperparameter-tuning-b1cfcbe4ca9a).
+ - [Cyclical learning rate](https://medium.com/oracledevs/lessons-from-alpha-zero-part-6-hyperparameter-tuning-b1cfcbe4ca9a).
+ - [~~Slow window size increase~~](https://medium.com/oracledevs/lessons-from-alpha-zero-part-6-hyperparameter-tuning-b1cfcbe4ca9a).
  - Implement UT3 neural network in other frameworks, eg: TensorFlow.
 
 ## Requirements
