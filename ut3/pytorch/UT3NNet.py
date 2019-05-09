@@ -53,8 +53,6 @@ class UT3NNet(nn.Module):
 
     def forward(self, s):
 
-        print(s.shape)
-
         s = self.conv1(s)
         s = self.conv2(s)
         s = self.conv3(s)
@@ -62,13 +60,7 @@ class UT3NNet(nn.Module):
 
         s = self.drop(s)
 
-        print(s.shape)
-
         pi = self.out_pi(s).view(-1, self.board_x*self.board_y)
         v = self.out_v(s).view(-1, 1)
-
-        print(pi.shape, v.shape)
-
-        raise
 
         return F.log_softmax(pi, dim=1), torch.tanh(v)
