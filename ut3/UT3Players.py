@@ -45,16 +45,16 @@ class MinMaxUT3Player():
         if self.end[key] or depth == 0:
             return -self.end[key]
 
-        valid = self.game.getValidMoves(board, 1)
         value_action = []
 
-        for a in valid:
-            next_board, next_player = self.game.getNextState(board, 1, a)
-            next_board = self.game.getCanonicalForm(next_board, next_player)
-            value_action.append((self.search(next_board, depth-1), a))
+        for a, valid in enumerate(self.game.getValidMoves(board, 1)):
+            if valid:
+                next_board, next_player = self.game.getNextState(board, 1, a)
+                next_board = self.game.getCanonicalForm(next_board, next_player)
+                value_action.append((self.search(next_board, depth-1), a))
 
-        v, a = max(value_action)
-        return -v, a
+        value, action = max(value_action)
+        return -value, action
 
     def play(self, board):
         return self.search(board, 2)[1]
