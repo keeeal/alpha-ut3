@@ -47,7 +47,10 @@ class MinMaxUT3Player():
         if key not in self.valid:
             self.valid[key] = [a for a, val in enumerate(self.game.getValidMoves(board, 1)) if val]
 
-        if self.end[key] or depth == 0:
+        if self.end[key]:
+            return -self.end[key], None
+
+        if depth == 0:
             return -self.end[key], random.choice(self.valid[key])
 
         value_action = []
