@@ -51,7 +51,7 @@ class MinMaxUT3Player():
             if valid:
                 next_board, next_player = self.game.getNextState(board, 1, a)
                 next_board = self.game.getCanonicalForm(next_board, next_player)
-                value_action.append((self.search(next_board, depth-1), a))
+                value_action.append((self.search(next_board, depth-1)[0], a))
 
         value, action = max(value_action)
         return -value, action
