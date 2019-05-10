@@ -53,7 +53,22 @@ class MinMaxUT3Player():
                 next_board = self.game.getCanonicalForm(next_board, next_player)
                 value_action.append((self.search(next_board, depth-1)[0], a))
 
-        value, action = max(value_action)
+        wins = [(v,a) for v,a in value_action if v == 1]
+        if len(wins):
+            value, action = np.random.choice(wins)
+            return -value, action
+
+        unknowns = [(v,a) for v,a in value_action if v == 0]
+        if len(unknowns):
+            value, action = np.random.choice(unknowns)
+            return -value, action
+
+        draws = [(v,a) for v,a in value_action if v > -1]
+        if len(unknowns):
+            value, action = np.random.choice(draws)
+            return -value, action
+
+        value, action = np.random.choice(value_action)
         return -value, action
 
     def play(self, board):
