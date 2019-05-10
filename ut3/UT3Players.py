@@ -36,6 +36,7 @@ class MinMaxUT3Player():
         self.game = game
         self.depth = depth
         self.end = {}
+        self.valid = {}
 
     def search(self, board, depth):
         key = self.game.stringRepresentation(board)
@@ -43,28 +44,30 @@ class MinMaxUT3Player():
         if key not in self.end:
             self.end[key] = self.game.getGameEnded(board, 1)
 
+        if key not in self.valid:
+            self.valid[key] = [a for a, val in enumerate(self.game.getValidMoves(board, 1)) if val]
+
         if self.end[key] or depth == 0:
-            return -self.end[key], None
+            return -self.end[key], random.choice(self.valid[key])
 
         value_action = []
 
-        for a, valid in enumerate(self.game.getValidMoves(board, 1)):
-            if valid:
-                next_board, next_player = self.game.getNextState(board, 1, a)
-                next_board = self.game.getCanonicalForm(next_board, next_player)
-                value_action.append((self.search(next_board, depth-1)[0], a))
+        for a in self.valid[key]:
+            next_board, next_player = self.game.getNextState(board, 1, a)
+            next_board = self.game.getCanonicalForm(next_board, next_player)
+            value_action.append((self.search(next_board, depth-1)[0], a))
 
-        wins = [(v,a) for v,a in value_action if v == 1]
+        wins = [(v, a) for v, a in value_action if v == 1]
         if len(wins):
             value, action = random.choice(wins)
             return -value, action
 
-        unknowns = [(v,a) for v,a in value_action if v == 0]
+        unknowns = [(v, a) for v, a in value_action if v == 0]
         if len(unknowns):
             value, action = random.choice(unknowns)
             return -value, action
 
-        draws = [(v,a) for v,a in value_action if v > -1]
+        draws = [(v, a) for v, a in value_action if v > -1]
         if len(draws):
             value, action = random.choice(draws)
             return -value, action
