@@ -43,7 +43,7 @@ class MinMaxUT3Player():
             self.end[key] = self.game.getGameEnded(board, 1)
 
         if self.end[key] or depth == 0:
-            return -self.end[key]
+            return -self.end[key], None
 
         value_action = []
 
