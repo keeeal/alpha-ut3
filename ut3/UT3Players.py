@@ -64,7 +64,7 @@ class MinMaxUT3Player():
             return -value, action
 
         draws = [(v,a) for v,a in value_action if v > -1]
-        if len(unknowns):
+        if len(draws):
             value, action = random.choice(draws)
             return -value, action
 
