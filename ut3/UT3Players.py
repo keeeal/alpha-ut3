@@ -7,7 +7,7 @@ class RandomPlayer():
     def play(self, board):
         valid = self.game.getValidMoves(board, 1)
         while True:
-            a = random.randint(self.game.getActionSize())
+            a = random.randrange(self.game.getActionSize())
             if valid[a]: return a
 
 
