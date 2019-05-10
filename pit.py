@@ -17,7 +17,8 @@ g = UT3Game()
 # all players
 rp = RandomPlayer(g).play
 hp = HumanUT3Player(g).play
-mp = MinMaxUT3Player(g).play
+mp2 = MinMaxUT3Player(g, 2).play
+mp3 = MinMaxUT3Player(g, 3).play
 
 # nnet players
 n1 = NNet(g)
@@ -33,5 +34,5 @@ n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 #mcts2 = MCTS(g, n2, args2)
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
-arena = Arena.Arena(n1p, mp, g, display=display)
+arena = Arena.Arena(mp2, mp3, g, display=display)
 print(arena.playGames(100, verbose=True))

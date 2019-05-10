@@ -32,8 +32,9 @@ class HumanUT3Player():
 
 
 class MinMaxUT3Player():
-    def __init__(self, game):
+    def __init__(self, game, depth=2):
         self.game = game
+        self.depth = depth
         self.end = {}
 
     def search(self, board, depth):
@@ -72,4 +73,4 @@ class MinMaxUT3Player():
         return -value, action
 
     def play(self, board):
-        return self.search(board, 2)[1]
+        return self.search(board, self.depth)[1]
