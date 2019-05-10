@@ -1,4 +1,4 @@
-import numpy as np
+import random
 
 class RandomPlayer():
     def __init__(self, game):
@@ -7,7 +7,7 @@ class RandomPlayer():
     def play(self, board):
         valid = self.game.getValidMoves(board, 1)
         while True:
-            a = np.random.randint(self.game.getActionSize())
+            a = random.randint(self.game.getActionSize())
             if valid[a]: return a
 
 
@@ -55,20 +55,20 @@ class MinMaxUT3Player():
 
         wins = [(v,a) for v,a in value_action if v == 1]
         if len(wins):
-            value, action = np.random.choice(wins)
+            value, action = random.choice(wins)
             return -value, action
 
         unknowns = [(v,a) for v,a in value_action if v == 0]
         if len(unknowns):
-            value, action = np.random.choice(unknowns)
+            value, action = random.choice(unknowns)
             return -value, action
 
         draws = [(v,a) for v,a in value_action if v > -1]
         if len(unknowns):
-            value, action = np.random.choice(draws)
+            value, action = random.choice(draws)
             return -value, action
 
-        value, action = np.random.choice(value_action)
+        value, action = random.choice(value_action)
         return -value, action
 
     def play(self, board):
