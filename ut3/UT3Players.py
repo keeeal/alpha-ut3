@@ -31,10 +31,30 @@ class HumanUT3Player():
         return a
 
 
-class GreedyUT3Player():
-    '''Always try to win the current microboard.'''
+class MinMaxUT3Player():
     def __init__(self, game):
         self.game = game
+        self.end = {}
+
+    def search(self, board, depth):
+        key = self.game.stringRepresentation(board)
+
+        if key not in self.end:
+            self.end[key] = self.game.getGameEnded(board, 1)
+
+        if self.end[key] or depth == 0:
+            return -self.end[key]
+
+        valid = self.game.getValidMoves(board, 1)
+        value_action = []
+
+        for a in valid:
+            next_board, next_player = self.game.getNextState(board, 1, a)
+            next_board = self.game.getCanonicalForm(next_board, next_player)
+            value_action.append((self.search(next_board, depth-1), a))
+
+        v, a = max(value_action)
+        return -v, a
 
     def play(self, board):
-        pass
+        return self.search(board, 2)[1]
