@@ -35,33 +35,30 @@ class MinMaxUT3Player():
     def __init__(self, game, depth=2):
         self.game = game
         self.depth = depth
-        self.ended = {}
-        self.actions = {}
+        self.end = {}
+        self.valid = {}
 
-    def search(self, board, depth, alpha, beta):
-        state = self.game.stringRepresentation(board)
+    def search(self, board, depth):
+        key = self.game.stringRepresentation(board)
 
-        if state not in self.ended:
-            self.ended[state] = self.game.getGameEnded(board, 1)
+        if key not in self.end:
+            self.end[key] = self.game.getGameEnded(board, 1)
 
-        if self.ended[state]:
-            return -self.ended[state], None
+        if key not in self.valid:
+            self.valid[key] = [a for a, val in enumerate(self.game.getValidMoves(board, 1)) if val]
 
-        if state not in self.actions:
-            self.actions[state] = [a for a,x in enumerate(self.game.getValidMoves(board, 1)) if x]
+        if self.end[key]:
+            return -self.end[key], None
 
         if depth == 0:
-            return -self.ended[state], random.choice(self.actions[state])
+            return -self.end[key], random.choice(self.valid[key])
 
-        action, value = None, -float('inf')
-        for a in self.actions[state]:
+        value_action = []
+
+        for a in self.valid[key]:
             next_board, next_player = self.game.getNextState(board, 1, a)
             next_board = self.game.getCanonicalForm(next_board, next_player)
-            v = search(self, next_board, depth-1, -beta, -alpha)
-            if v > value: action, value = a, v
-            alpha = max(alpha, value)
-            if alpha >= beta:
-                break
+            value_action.append((self.search(next_board, depth-1)[0], a))
 
         wins = [(v, a) for v, a in value_action if v == 1]
         if len(wins):
@@ -82,4 +79,4 @@ class MinMaxUT3Player():
         return -value, action
 
     def play(self, board):
-        return self.search(board, self.depth, -float('inf'), float('inf'))[1]
+        return self.search(board, self.depth)[1]
