@@ -24,7 +24,8 @@ class SepConv2d(nn.Module):
 class DenseConv2d(nn.Module):
     def __init__(self, in_channels, growth):
         super().__init__()
-        self.conv = SepConv2d(in_channels, growth)
+        #self.conv = SepConv2d(in_channels, growth)
+        self.conv = nn.Conv2d(in_channels, growth, 3, 1, 1)
         self.norm = nn.BatchNorm2d(growth)
         self.nlin = nn.ReLU()
 
