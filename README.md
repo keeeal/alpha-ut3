@@ -10,7 +10,8 @@ It's like tic-tac-toe, but each square of the game contains another game of tic-
 AlphaZero is a reinforcement learning algorithm trained only using self-play. It combines a neural network and Monte Carlo Tree Search in an elegant policy iteration framework to achieve stable learning. [Read more...](https://web.stanford.edu/~surag/posts/alphazero.html)
 
 ## Experiments
-Coming soon.
+
+For testing purposes, consider a simple opponent: *MinMax(n)*. Before each move, *MinMax(n)* expands the search tree from the current state of the board, simulating every possible move and returning the value *v* of the resulting state, up to a depth of *n* moves. *v* is either 1, -1, or [-ε](https://en.wikipedia.org/wiki/Machine_epsilon), depending on whether the game is won, lost or drawn respectively. *v* is zero for non-terminal states. *MinMax(n)* applies the [MinMax algorithm](https://en.wikipedia.org/wiki/Minimax) so that guaranteed wins are played and guaranteed losses avoided by up to *n* moves ahead. When no winning move is detected, a move is chosen randomly from the non-losing moves. *MinMax(0)* is therefore a completely random player.
 
 ## To-do
  - ~~Reshape nnet policy output to match board shape, i.e. retain the spatial relationship between game state and policy vector.~~
