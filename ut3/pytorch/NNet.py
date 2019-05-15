@@ -1,37 +1,38 @@
-import argparse
-import os
-import shutil
-import time
-import random
-import numpy as np
-import math
-import sys
+
+import sys, os, time, random
 sys.path.append('../../')
 from utils import *
+
+import numpy as np
+import torch
+from torch import nn, optim
+
 from pytorch_classification.utils import Bar, AverageMeter
 from NeuralNet import NeuralNet
-
-import argparse
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torchvision import datasets, transforms
-
 from .UT3NNet import UT3NNet as onnet
 
 args = dotdict({
     'lr': 0.001,
-    'dropout': 0.3,
+    'dropout': 0.1,
     'epochs': 16,
     'batch_size': 64,
     'cuda': torch.cuda.is_available(),
-    'growth': 16,
+    'width': 16,
 })
+
+def poisson(k, l):
+    return l**k*np.e**-l/np.math.gamma(k+1)
+
+def poisson_factor(k, min_f, max_f, max_k, l=8):
+    return min_f + (max_f-min_f)*poisson(l*k/max_k, l)/poisson(l, l)
 
 class NNetWrapper(NeuralNet):
     def __init__(self, game):
         self.nnet = onnet(game, args)
+        self.optimizer = optim.Adam(self.nnet.parameters(), lr=args.lr)
+        self.scheduler = optim.lr_scheduler.LambdaLR(
+            self.optimizer, lambda k: poisson_factor(k, 1, 10, 128))
+
         self.board_x, self.board_y = game.getBoardSize()
         self.board_c = game.getBoardChannels()
         self.action_size = game.getActionSize()
@@ -46,7 +47,6 @@ class NNetWrapper(NeuralNet):
         """
         examples: list of examples, each example is of form (board, pi, v)
         """
-        optimizer = optim.Adam(self.nnet.parameters())
 
         for epoch in range(args.epochs):
             print('EPOCH ::: ' + str(epoch+1))
@@ -85,9 +85,9 @@ class NNetWrapper(NeuralNet):
                 v_losses.update(l_v.item(), boards.size(0))
 
                 # compute gradient and do SGD step
-                optimizer.zero_grad()
+                self.optimizer.zero_grad()
                 total_loss.backward()
-                optimizer.step()
+                self.optimizer.step()
 
                 # measure elapsed time
                 batch_time.update(time.time() - end)
@@ -107,7 +107,7 @@ class NNetWrapper(NeuralNet):
                             )
                 bar.next()
             bar.finish()
-
+            self.scheduler.step()
 
     def predict(self, board):
         """

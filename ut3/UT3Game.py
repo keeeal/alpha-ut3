@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import sys
 sys.path.append('..')
 from Game import Game
@@ -9,9 +9,8 @@ class UT3Game(Game):
     def __init__(self, n=3):
         self.n = n
 
-    def _boardArray(self, b):
+    def getArray(self, b):
         macro = np.tile(b.macro, (self.n, self.n))
-        #macro = b.macro.repeat(self.n, 0).repeat(self.n, 1)
         return np.stack((b.pieces, macro))
 
     def getBoardChannels(self):
@@ -25,7 +24,7 @@ class UT3Game(Game):
 
     def getInitBoard(self):
         b = Board(self.n)
-        return self._boardArray(b)
+        return self.getArray(b)
 
     def getNextState(self, board, player, action):
         b = Board(self.n)
@@ -33,7 +32,7 @@ class UT3Game(Game):
         b.macro = np.copy(board[1,:3,:3])
         move = int(action/self.n**2), action%self.n**2
         b.execute_move(move, player)
-        return self._boardArray(b), -player
+        return self.getArray(b), -player
 
     def getValidMoves(self, board, player):
         valid = [0]*self.getActionSize()

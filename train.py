@@ -5,9 +5,9 @@ from utils import *
 
 args = dotdict({
     'numIters': 1000,
-    'numEps': 256,
+    'numEps': 100,
     'tempThreshold': 15,
-    'updateThreshold': 0.55,
+    'updateThreshold': 0.52,
     'maxlenOfQueue': 200000,
     'numMCTSSims': 25,
     'arenaCompare': 40,
