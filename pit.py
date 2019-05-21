@@ -21,19 +21,17 @@ mp1 = MinMaxUT3Player(g, 0).play
 mp2 = MinMaxUT3Player(g, 1).play
 
 # nnet players
-'''
 n1 = NNet(g)
 n1.load_checkpoint('./temp/','best.pth.tar')
-args1 = dotdict({'numMCTSSims': 50, 'cpuct':4})
+args1 = dotdict({'numMCTSSims': 50, 'cpuct':2})
 mcts1 = MCTS(g, n1, args1)
-n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
-'''
+np1 = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
 #n2 = NNet(g)
 #n2.load_checkpoint('/dev/8x50x25/','best.pth.tar')
 #args2 = dotdict({'numMCTSSims': 25, 'cpuct':1.0})
 #mcts2 = MCTS(g, n2, args2)
-#n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
+#np2 = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
-arena = Arena.Arena(mp1, rp, g, display=display)
+arena = Arena.Arena(np1, rp, g, display=display)
 print(arena.playGames(100, verbose=True))

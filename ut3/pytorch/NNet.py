@@ -12,12 +12,12 @@ from NeuralNet import NeuralNet
 from .UT3NNet import UT3NNet as onnet
 
 args = dotdict({
-    'lr': 0.001,
-    'dropout': 0.1,
-    'epochs': 16,
+    'lr': 0.0001,
+    'dropout': 0.5,
+    'epochs': 10,
     'batch_size': 64,
     'cuda': torch.cuda.is_available(),
-    'width': 16,
+    'width': 64,
 })
 
 def poisson(k, l):
@@ -29,13 +29,10 @@ def poisson_factor(k, min_f, max_f, max_k, l=8):
 class NNetWrapper(NeuralNet):
     def __init__(self, game):
         self.nnet = onnet(game, args)
-        self.optimizer = optim.Adam(self.nnet.parameters(), lr=args.lr)
-        self.scheduler = optim.lr_scheduler.LambdaLR(
-            self.optimizer, lambda k: poisson_factor(k, 1, 10, 128))
-
         self.board_x, self.board_y = game.getBoardSize()
         self.board_c = game.getBoardChannels()
         self.action_size = game.getActionSize()
+        self.epochs_complete = 0
 
         if args.cuda:
             self.nnet.cuda()
@@ -48,8 +45,15 @@ class NNetWrapper(NeuralNet):
         examples: list of examples, each example is of form (board, pi, v)
         """
 
+        optimizer = optim.Adam(self.nnet.parameters(), lr=args.lr)
+        scheduler = optim.lr_scheduler.LambdaLR(
+            optimizer, lambda k: poisson_factor(k, 1, 10, 64))
+
+        for n in range(self.epochs_complete):
+            scheduler.step()
+
         for epoch in range(args.epochs):
-            print('EPOCH ::: ' + str(epoch+1))
+            print('EPOCH :::', epoch+1, scheduler.get_lr())
             self.nnet.train()
             data_time = AverageMeter()
             batch_time = AverageMeter()
@@ -85,9 +89,9 @@ class NNetWrapper(NeuralNet):
                 v_losses.update(l_v.item(), boards.size(0))
 
                 # compute gradient and do SGD step
-                self.optimizer.zero_grad()
+                optimizer.zero_grad()
                 total_loss.backward()
-                self.optimizer.step()
+                optimizer.step()
 
                 # measure elapsed time
                 batch_time.update(time.time() - end)
@@ -107,7 +111,7 @@ class NNetWrapper(NeuralNet):
                             )
                 bar.next()
             bar.finish()
-            self.scheduler.step()
+            scheduler.step()
 
     def predict(self, board):
         """
